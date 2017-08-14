@@ -1,0 +1,232 @@
+
+# coding: utf-8
+
+# In[ ]:
+
+
+ex4_py3_01
+
+
+# In[1]:
+
+
+cars = 100
+space_in_a_car =4.0
+drivers = 30
+passengers = 90
+cars_not_driven = cars - drivers
+cars_driven=drivers
+carpool_capacity=cars_driven*space_in_a_car
+average_passengers_per_car=passengers/cars_driven
+
+print ("There are", cars, "cars available.")
+print ("There are only", drivers, "drivers available.")
+print ("There will be", cars_not_driven, "empty cars today.")
+print ("We can transport", carpool_capacity, "people today.")
+print ("We have", passengers, "to carpool today.")
+print ("We need to put about", average_passengers_per_car, "in each car.")
+print ('sample it')
+
+
+# In[ ]:
+
+
+ex5_py3_02
+
+
+# In[7]:
+
+
+my_name = 'Zed A. Shaw'
+my_age = 35 # not a lie
+my_height = 74 # inches
+my_weight = 180 # lbs
+my_eyes = 'Blue'
+my_teeth = 'White'
+my_hair = 'Brown'
+
+print ("Let's talk about %s." %my_name)
+print ("He's %s inches tall." %my_height)
+print ("He's %d inches tall." %my_height)
+print ("He's %r inches tall." %my_height)
+print ("He's %d pounds heavey." % my_weight)
+print ("Acutually that's not too heavy.")
+print ("He's got %s eyes and %s hair." % (my_eyes, my_hair))
+
+print ("His teeth are usually %s depending on the coffee." % my_teeth)
+
+# this line is tricky, try to get it exactly right
+print ("If I add %d, %d, and %d I get %d." % (my_age, my_height, my_weight, (my_age + my_height + my_weight)))
+
+# ===%d==== not  ==d%==  格式务必注意
+
+
+# In[ ]:
+
+
+ex6_py3_03
+
+
+# In[9]:
+
+
+x ="there are %d types of people." %10
+binary = "binary"
+do_not = "don't"
+y = "Those who know %s and those who %s" % (binary, do_not)
+
+
+print (x)
+print (y)
+
+print ("I said: %r." % x)
+print ("I also said: '%s'."  %y)
+
+print ("test-I also said: %s."  %y)
+ok = False
+
+joke_evaluation = "Isn't that joke so funny?! %r" 
+
+ # # why not to use  x% d%" ??
+
+
+print (joke_evaluation %ok)
+
+
+w = "This is the left side of..." 
+e = "a string with a right side." 
+
+print (w + e)
+
+
+
+
+
+
+# In[ ]:
+
+
+ex8_py3_04
+
+
+# In[15]:
+
+
+formatter = "%r%r%r%r"
+print ("one \n two")
+print (formatter % (1, 2, 3, 4))
+print (formatter % ("one", "two", "three", "four"))
+print (formatter % (formatter, formatter, formatter, formatter))
+
+print (formatter % (
+ "I had this thing.",
+ "That you could type up right.",
+ "But it didn't sing.",  # why with double-quote ??
+ "So I said goodnight."
+ ))
+ 
+
+
+# In[ ]:
+
+
+e11_py3_05
+
+
+# In[21]:
+
+
+print ("How old are you?",)
+age = int(input("-->"))
+print ("How tall are you?",)
+height = input("-->")
+print ("How much do you weigh?",)
+weight = input("-->")
+
+print ("So, you are %d old, %r tall and %r heavy. " %(age, height, weight))
+
+
+# In[ ]:
+
+
+e11_py3_06
+
+
+# In[24]:
+
+
+from sys import argv
+
+script,user_name = argv  ## please note that spell the word "script" correctly
+prompt = '>'
+
+print ("HI %s, I'm the %s script." %(user_name, script))
+
+print("I'd like to ask you a few questions.")
+print ("Do you like me %s" %user_name)
+
+likes = input(prompt)
+print ("where do you live %s ?" %user_name)
+lives = input(prompt)
+
+print ("what kind of computer do you have?")
+computers = raw_input(prompt)
+
+print ("""
+Alright, so you said %r about liking me.
+You live in %r. Not sure where that is.
+And you have a %r computer. Nice.
+""" %(likes, lives, computers) )  ## plz note that do not miss the "%"
+
+
+# In[ ]:
+
+
+e11_py3_07
+
+
+# In[25]:
+
+
+# -*- coding: utf-8 -*- 
+
+def add(a, b):
+    print ("ADDING %d + %d" % (a, b))
+    return a + b  ## 函数中一定要有return返回值才是完整的函数
+
+def subtract(a, b):
+    print ("SUBTRACTING %d - %d" % (a, b))
+    return a - b
+
+def multiply(a, b):
+    print ("MULTIPLYING %d * %d" % (a, b))
+    return a * b
+    
+def divide(a, b):
+    print ("DIVIDING %d / %d" % (a, b))
+    return a / b
+
+
+print ("Let's do some math with just functions!")
+
+age = add(30, 5)
+height = subtract(78, 4)
+weight = multiply(90, 2)
+iq = divide(100, 2)
+
+print ("Age: %d, Height: %d, Weight: %d, IQ: %d" % (age, height, weight, iq))
+
+
+# A puzzle for the extra credit, type it in anyway.
+print ("Here is a puzzle.")
+
+what = add(age, subtract(height, multiply(weight, divide(iq, 2))))
+
+print ("That becomes: ", what, "Can you do it by hand?")
+
+
+# In[ ]:
+
+
+
+
