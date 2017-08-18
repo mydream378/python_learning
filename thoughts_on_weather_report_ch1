@@ -1,0 +1,293 @@
+
+> 这是个人的总结，有诸多不足之处，请各位指点和切磋学习。
+
+
+阳志平先生在文章：
+
+[如何学习编程——来自认知科学的四个建议](http://www.yangzhiping.com/psy/learn-coding.html?from=singlemessage&isappinstalled=0)
+
+提及：
+> 作为学习编程的新手，让你同时在电脑上处理语言，学习怎么用新的关键词去描述世界；处理逻辑；怎样处理各类需求的优先级别。你很难同时学会这些操作，这使得不少人学习编程走向失败。
+>
+> 所以我建议新手一定要把语言和逻辑分别进行训练。一次只训练一件事情，比如你刚开始的时候可以只训练语言。把编程当成语言，像学英语一样，它有哪些常用的高频词汇；以及用什么样的语法才能把这高频的词汇串起来，在初步掌握语言规律后再去掌握逻辑规律，这样会帮助你学习编程。
+
+而我们处于入门阶段，对于编程语言的学习，需要通过系统学习：关键概念名词，来深入理解这门学问。
+
+从某种角度来看，关键概念的习得，是构成我们大脑操作系统的主要模块，我们以此为知识结点，不断和已有的学习方法和经验产生关联，并籍此链接其他知识，最后让自己的知识结构完整、丰满。
+
+
+本次ch1的主要任务：
+- CLI 版天气通需要完成的功能有：
+- 输入城市名，返回该城市的天气数据；
+- 输入指令，打印帮助文档（一般使用 h 或 help）；
+- 输入指令，退出程序的交互（一般使用 quit 或 exit）；
+- 在退出程序之前，打印查询过的所有城市。
+- 核心功能：输入城市名，返回该城市的天气数据。
+
+按照卡片的引导，我们对此任务，按照逻辑进行拆解：
+-    1、查询 A 数据所对应的 B 数据，需了解这个功能怎么实现
+-    2、用 input( ) 接收输入，使用 if...else... 判断指定输入，使用 print( ) 打印文本
+-    3、用 input( ) 接收输入，让程序在得到指定输入时，退出运行需了解如何让程序退出运行
+-    4、将所有被查询过的数据保存，再打印出来，需了解如何保存用户每一次输入结果
+
+
+
+### 一、数据载入：
+课程已经提供了天气数据：https://github.com/AIHackers/Py101-004/tree/master/Chap1/resource 中，
+即weather_info.txt 文件，内含中国所有县级市以上的城市天气数据。
+
+#### 1.如何打开（载入）提供的天气文件？
+
+   这里涉及到文件的读写方式——I/O,即Input和Output，
+   大妈一直说，优先选取官方文档，是正确的学习姿势。
+   官方文档有最基本、最凝炼的阐释，可能藏着解决问题的密钥：
+
+   于是查阅Python 3.6.2 documentation中  Built-in-->funcitons-->open
+   首先打开文件，open：
+
+       >其基本表达式:open(name[, mode[, buffering]])
+       name即是文件名（包括拓展名），
+       mode，指传入标识符，包括最常见的'r' for reading, 'w' for writing , and 'a' for appending
+       默认情况，mode为r，即只读取文件。         
+       buffering指，指定文件的载入缓存大小，单位是byte，这样避免内粗溢出。
+
+
+    传统的f.open("test.text","r") ，
+   因为文件使用完毕后必须关闭，因为文件对象会占用操作系统的资源，并且操作系统同一时间能打开的文件数量也是有限的：所以，记得随时关闭文件，即file.close()
+
+>    由于文件读写时都有可能产生IOError，一旦出错，后面的f.close()就不会调用。所以，为了保证无论是否出错都能正确地关闭文件，我们可以使用try ... finally来实现：
+>
+>     try:
+>         f = open('/path/to/file', 'r')
+>         print f.read()
+>     finally:
+>         if f:
+>             f.close()
+>         
+> 但是每次都这么写实在太繁琐，所以，Python引入了with语句来自动帮我们调用close()方法：
+>         
+>--廖雪峰《python3教程》
+
+   最后我们代码如下：
+   with open('weather_info.txt') as f:
+
+#### 2.具体的读取方式？
+    *注意*，文件以默认read模式open，写入缓存。按照目的，我们需要灵活处理这些源数据，变成我们能方便调用的数据类型。
+
+     是逐行读取还是全部读取？
+
+    查阅《廖雪峰》的python3教程：
+    调用readline()可以每次读取一行内容，调用readlines()一次读取所有内容，并按行返回**list**。
+    因此，要根据需要决定怎么调用。如果文件很小，read()一次性读取最方便；如果不能确定文件大小，反复调用read(size)比较保险；
+
+   所以代码如下：我们选用readlines：
+   代码如下：
+      data = f.readlines()
+
+
+
+#### 3.读取后，如何选择“恰到好处”的数据类型，进行储存和后续管理？
+
+   读取之后存储在什么数据类型里呢？
+
+   查询天气，讲究一一对应关系，即hash算法，而dict是最方便用来对应查阅的工具，所以，如何将文件转为dict数据类型呢?
+
+   这是本ch1的一个难点：
+
+    首先，我们先对dict进行扫盲：
+
+    基本表达式：dict = {'key1'：'value1','key2'：'value2'}
+
+    python3.6.2 tutorials 中 Data structure --> Sections --> Dictionaries
+    其中的几个例子，可快速辅助理解dict的基本内容。
+
+        >>> tel = {'jack': 4098, 'sape': 4139}   # 永远记住key:value一一对应的关系
+        >>> tel['guido'] = 4127
+        >>> tel
+        {'sape': 4139, 'guido': 4127, 'jack': 4098}
+        >>> tel['jack']
+        4098
+
+        >>> del tel['sape']    # 删除 某个key
+        >>> tel['irv'] = 4127   # 重新 赋值
+        >>> tel
+        {'guido': 4127, 'irv': 4127, 'jack': 4098}
+
+
+        >>> 'guido' in tel   # 判断某个key是否存在于dict中
+        True
+        >>> 'jack' not in tel
+        False
+
+  扫盲结束，如何将readlines()返回的list，转为dict呢？
+  代码如下
+
+
+    weather_dict={}
+
+    with open('weather.txt') as f:   #为方便展示，weather只截取3个城市的数据。
+        data = f.readlines()
+        print("这是readlines())   #函数调用后返回的list，姑且称为data_list --> ",data)
+
+    for line in data:
+
+    print ("#"*10)  #分割线
+    print ("这是line_list:",line.split(','))
+
+    #将data_list的每个元素，如【'北京,晴\n'】转为新的list,姑且称line_list
+    #注意split()的运用，将一个item【'北京,晴\n'】--->一个list ['北京', '晴\n']
+
+    city = line.split(',')[0]   # 取 ['北京', '晴\n'] 中的 index[0]的元素，即--北京
+    print (city)
+    weather_info=line.split(',')[1].rstrip()  # 取 ['北京', '晴\n'] 中的 index[1]的元素，即--晴，同时去除“分隔符\n”
+    print(weather_info)
+
+    print ("#"*10)
+
+
+-----输-出-结-果------
+
+**通过代码和输出结果的对比，细微对比，如何将txt文档，按照行读取，转为list。**
+
+    这是readlines()函数调用后返回的list，姑且称为data_list -->  ['北京,晴\n', '海淀,晴\n', '朝阳,晴\n']
+    ##########
+    这是line_list: ['北京', '晴\n']
+    北京
+    晴
+    ##########
+    ##########
+    这是line_list: ['海淀', '晴\n']
+    海淀
+    晴
+    ##########
+    ##########
+    这是line_list: ['朝阳', '晴\n']
+    朝阳
+    晴
+    ##########
+
+
+还记得LPTHW中ex39的例子么？
+
+    for state, abbrev in states.items():  #注意dict.items()这种表达方式，还有dict.keys(),dict.items(),
+        print "%s is abbreviated %s" % (state, abbrev)”
+-----输-出-结-果------
+
+        California is abbreviated CA
+        Michigan is abbreviated MI
+        New York is abbreviated NY
+        Florida is abbreviated FL
+        Oregon is abbreviated OR”
+
+还有dict.keys() 和 dict.items()，举例如下：
+
+    tel = {'jack': 4098, 'sape': 4139,'tom':1234}   # 永远记住key:value一一对应的关系
+    a = list(tel.keys()) # 输出所有的keys()
+    print(a)
+    b = list(tel.values())  # 输出所有的values()
+    print(b)
+
+    -----输-出-结-果------
+    ['jack', 'sape', 'tom']  # 输出所有的keys()
+    [4098, 4139, 1234]       # 输出所有的values()
+    -----输-出-结-果------
+
+所以，接下来就是最关键的一步：将key和value一一对应起来。
+
+    weather_dict[city]=weather_info
+    # print(weather_dict)
+
+到此，将txt文档转为dict的任务大功告成。
+
+---
+
+### 二、天气查询
+
+接下来“查询”，将input的内容和dict的dict.keys()进行匹配，查询。
+
+
+    history= {}    # 注意是history应该放在whiel-loop上面，作为全局变量，而不是while下面。
+
+    while True:
+        user_input = input("请输入某个城市名称：")
+        if user_input in weather_dict.keys():    #注意这里是if,不是for  &注意dict.keys()这种表达方式
+            weather_report = weather_dict[user_input]  #或者写为 weather_report = weather_dict.get(user_input)
+
+            print ("%s天气: %s" %(user_input, weather_report))
+            history[user_input] = weather_report # 将查询记录，导入到history这个dic
+
+    elif user_input == "history":
+        for key,value in history.items():
+                 print ("历史查询记录:%s" % key,value)
+
+    elif user_input == "exit":
+        for key,value in history.items():
+                 print ("历史查询记录:%s" % key,value)
+        exit(0)
+    elif user_input == "help":
+        print ("""
+        输入城市名，返回该城市的天气数据；
+        输入h或help，打印帮助文档；
+        输入history，打印查询历史；
+        输入quit，退出程序。
+               """
+        )
+    else:
+        print("您输入的城市，不存在，请重新输入")
+
+
+关于历史查询记录[history]，如果不运用dict，通过灵活运用list，将history转为为list，
+
+代码将如下：
+
+history= []   #将history作为list
+
+    while True:
+        user_input = input("请输入某个城市名称：")
+        if user_input in weather_dict.keys():
+            weather_report = weather_dict[user_input]  # weather_report = weather_dict.get(user_input)
+            #print (weather_report)
+            print ("%s天气: %s" %(user_input, weather_report))
+            history[user_input]= weather_report # 将查询记录，录入到 history这个dict
+            user_input = user_input+ ":" + weather_dict[user_input] #思考为什么【+】加号不可以省略？？
+            history.append(user_input) #或者更简练：history.append(user_input+':'+weather_dict[user_input])
+
+    elif user_input == "history":
+        for item in history:      #注意此处，也发生变化咯
+            print ("历史查询记录:%s" %history)
+
+    elif user_input == "exit":
+        for item in history:
+            print ("历史查询记录:%s" %history)
+            exit(0)
+    elif user_input == "help":
+        print ("""
+        输入城市名，返回该城市的天气数据；
+        输入h或help，打印帮助文档；
+        输入history，打印查询历史；
+        输入quit，退出程序。
+               """
+        )
+    else:
+        print("您输入的城市，不存在，请重新输入")
+
+
+### 总结：
+
+**概念学习**：
+
+对于新事物的学习，尤其是编程语言，我们需要回归到最具有普适性和最经典的原始官方文档，尽可能吃透第一手信息，因为这类似学英语的词典一般，先把最基本的概念名词理解清楚，是我们继续从逻辑解构深入挖掘的前提。
+
+**主题拓展**：
+
+仅仅查字典，是无法理解其应用场景的，还需结合容易理解，具有迁移性、能转化为自己知识的例子。就如学习数学，对定理和模型的灵活应用，离不开大量的"三年模拟五年高考"练习题的检验。
+
+**任务解构**：
+
+每次chapter任务，都有卡片都给出了任务分解指南和参考知识点和资源。
+
+恰如大妈所言，这些卡片的设置都是经过前几次的python课堂的检验，有代码bug等“不为人知的”坑，也有解锁版块任务“不可言说”的成就感。既然，卡片经过如此“暗藏玄机”的设置，那我们就理应以启动“基于问题解决”的学习方式（Problem Based Learning，PBL），有步骤、有计划地，先解构，再重建，最后把这些涉及到的知识点内化为自己的技能。
+
+**循序渐进**
+
+大量使用class和面向对象编程，难以望其项背。但我们应能结合自己的背景，不必盲目比较，增加不必要的压力，而应不断适应调整，循序渐进——怕什么真理µ无穷，进一寸有进一寸的欢喜。
