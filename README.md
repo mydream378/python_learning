@@ -1,2 +1,2 @@
 # python_learning
-Neuroscience PhD is on his way to learn Python
+Freeman, on his way to learn Python
