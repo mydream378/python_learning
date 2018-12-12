@@ -1,0 +1,9 @@
+{% extends "index.html" %}
+{% block content %}
+{% for row in history %}
+{{ row[0] }} 天气: {{ row[1] }} ; 温度:{{ row[2] }} <br>
+{% endfor %}
+
+
+
+{% endblock %}

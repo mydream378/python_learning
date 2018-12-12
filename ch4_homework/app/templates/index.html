@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  <style type="text/css">
+  /*body {font-style::italic}*/
+  h2 {font-family:sans-serif;}
+  img { max-width: 100%;}
+  </style>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>天气查询系统</title>
+  </head>
+  <body>
+    <h2 align = center > Welcome to Weather Forecast </h1>
+
+
+<div align="center">
+    <img align = center class = 'img-circle' src="http://oov5zaahm.bkt.clouddn.com/weather_forcast.png" alt="forcast"  >
+
+    <form  action="/user_inquiry" method="get">  <!--# action 问题-->
+    城市:<input type="text" name="city" > <br>
+    <input type="submit" name="query" value="查询">
+    <input type="submit" name="history" value="历史">
+    <input type="submit" name="help" value="帮助">
+    <input type="submit" name="update" value="更新">
+
+
+
+    </form>
+
+{% block content %}   <!--# block title和footer 问题-->
+{% endblock %}
+
+</div>
+</body>
+</html>
